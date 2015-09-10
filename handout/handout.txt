@@ -1,0 +1,130 @@
+= Beginner's Guide to Bash
+
+//== Introduction
+
+=== Exercise 1
+
+****
+Compress all of the files in a directory that don't match the `*.gz`
+suffix.
+****
+
+Bash (and shells in general) make the general assumption that what you
+are trying to do is execute system commands, and so that is it's
+default interpretation of what you want to do, with everything else as
+just glue that sticks those elements together.
+
+Naturally, this is what makes Bash well suited to automating system
+administration tasks, as these can usually be achieved with very
+little extra code: you can just run your tasks immediately, as you
+would type them without any preamble or configuration.
+
+For example, one way we might solve this exercise in Scala would be a
+program like this:
+
+-----
+import java.io.File
+
+def process(f: File, indent: Int = 0): Unit = {
+  if(f.isDirectory)
+    for(child <- f.listFiles) process(child)
+  else if(!f.getName.endsWith(".gz"))
+    /* ... either call out to `gzip` or use the JDK library... */
+    Runtime.getRuntime.exec(Array("gzip", f.getPath))
+}
+
+process(new File("."))
+-----
+
+Once you have a couple of pieces in place, you should be able to write
+the equivalent in Bash in a couple of lines (but naturally there are
+many different ways to do this, none of which are wrong...)
+
+There are various situations in which Bash will replace special text
+with some computed values, and this is usually referred to in the docs
+as `EXPANSION`, e.g parameter expansion, filename expansion etc. Not
+suprisingly the latter is for finding and inserting files that match a
+wildcard patterns (this also has the charming moniker `globbing` in
+shell parlance).
+
+To get an idea of the wildcards you have available, take a look at the
+Bash man page (http://linux.die.net/man/1/bash): there is a whole
+section about different types of Expansion, look specifically
+"Pathname Expansion".
+
+By default you are limited to a couple of simple wildcards, but when
+the `extglob` (for extended globbing) setting is enabled you have
+significantly more options available:
+
+-----
+$ ls
+a.gz  b  c.gz
+$ ls !(*.gz)
+bash: !: event not found
+$ shopt -s extglob
+$ ls !(*.gz)
+b
+-----
+
+NOTE: Why is this behind an option? Backwards compatibility: if you try to
+use the pattern that you need without setting this option, you will
+get an error caused by the fact that it already has another meaning.
+
+Another point to note is that the Scala example is descending the
+directory recursively. One way to achieve this in Bash might be to
+adopt embrace the Unix philosophy of re-using and combining smaller
+tools to get the job done. For example, you've got
+[find](http://linux.die.net/man/1/find) which will do this for you,
+and you can usefully combine it with
+[xargs](http://linux.die.net/man/1/xargs).
+
+Or, again you can delve into the many options of Bash:
+
+-----
+$ ls *.gz
+a.gz  c.gz
+$ ls */*.gz
+dir1/a.gz
+$ shopt -s globstar
+$ ls **/*.gz
+a.gz  c.gz  dir1/a.gz  dir1/dir2/c.gz
+-----
+
+=== Excercise 2 - Variables
+
+Allow the behaviour of the script to be customised by setting the
+value of an environment variable before running it. For example:
+
+--------------------------------------
+$ bash test.sh
+Conf file name: /etc/default.txt
+$ export CONF_FILE=custom.txt
+Conf file name: custom.txt
+--------------------------------------
+
+There are two main difficulties in solving this problem: remembering
+the significance of `exported` variables, and testing whether a
+variable already has a value.
+
+For the second point there are a couple of options. We can use the
+method from exercise 1 to perform a verbose test of the contents of
+the variable.
+
+-----
+if [[ ! -z "$CONF_FILE" ]]
+then
+  CONF_FILE=/etc/default.txt
+  ...
+-----
+
+Another solution, however, is to use some of the more advanced
+variable substitution options. These allow you to do things like set a
+default value for a variable while you are accessing it.
+
+To make use this functionality you reference a variable by using the
+`${VARNAMEXXX}` syntax, where `XXX` is some special prefix which
+identifies the behaviour you want to use. There are documenting in the
+man page under
+https://www.gnu.org/software/bash/manual/bashref.html#Shell-Parameter-Expansion/[Shell Parameter Expansion] For example:
+
+//+ `:-` 
