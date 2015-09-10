@@ -1,12 +1,100 @@
+// a2x default options.
+//    a2x: -f pdf
+// Suppress revision history in dblatex outputs.
+//    a2x: --dblatex-opts "-P latex.output.revhistory=0 -P doc.toc.show=0"
+// Suppress book part, chapter and section numbering in DocBook XSL outputs.
+//    a2x: --xsltproc-opts
+//    a2x: "--stringparam part.autolabel 0
+//    a2x: --stringparam chapter.autolabel 0
+//    a2x: --stringparam section.autolabel.max.depth 0"
+
 = Beginner's Guide to Bash
 
-//== Introduction
+== Goals for this session
 
-=== Exercise 1
+This session is aimed squarely at beginners in the world of Bash
+scripting and Unix in general. If you don't know what Bash is, or if
+you've just used other people's Bash scripts without really
+understanding them, or you've tried to use Bash and ended up confused
+by its idiosyncracies then this session is probably for you.
+
+By the end of it you will hopefully:
+
+* know roughly what Bash is
+
+* know where to read the docs and be aware of the some of the odd
+  naming conventions in shell-land
+
+* know how to automate Bash's behaviour by writing scripts
+
+* understand when it's appropriate to use shell scripting
+
+* understand the limitiations of shell scripting
+
+* know where to find documentation and how to use it about shell
+  scripting
+
+== What is Bash?
+
+Bash is an example of family of programs, known as ``shells'' which
+take commands from the user and execute them. Bash is probably the
+most common shell and is usually the default on modern OSs that need
+one.
+
+It's main job is to execute other programs on your behalf, and this
+follows the Unix philosphy of having small programs that do one thing
+well, and then giving you the ability to glue these programs together
+to achieve larger tasks.
+
+For example, the shell will provide you with the ability to `pipe' the
+output of one command into the input of another.
+
+For example, this line will use the `wc` program to count the number
+of words in each file in the current directory, and then pipe this to
+the `sort`:
+
+-----
+wc -w * | sort -n
+-----
+
+Most commands you run, even the most basic ones, are external programs
+to which the shell is able to delegate, for example `which ls` will
+show you where the binary that shows you a list of files is stored.
+
+== Getting help
+
+Most Unix-like systems, incuding OSX, come with a set of documentation
+files call man pages, which document in great detail everything you
+could ever want to know about a command on the system. They can be
+accessed by typing `man` followed by the name of the command you want
+to learn about, and the best place to start is perhaps the man page
+about the man command itself, and you can search man pages with the
+`apropos` command:
+
+-----
+$ man man
+MAN(1)               Manual pager utils              MAN(1)
+
+NAME
+       man - an interface to the on-line reference manuals
+[...]
+$ apropos compress
+archive_read_filter (3) - functions for reading streaming archives
+archive_write_filter (3) - (unknown subject)
+gzip (1)             - compress or expand files
+[...]
+-----
+
+== Exercise One
 
 ****
 Compress all of the files in a directory that don't match the `*.gz`
 suffix.
+
+In the `test-data` directory of the repo will find a number of files,
+some of which are compressed, and some of which aren't.
+
+The command to use for the compression is `gzip`.
 ****
 
 Bash (and shells in general) make the general assumption that what you
@@ -22,6 +110,7 @@ would type them without any preamble or configuration.
 For example, one way we might solve this exercise in Scala would be a
 program like this:
 
+[source,scala]
 -----
 import java.io.File
 
@@ -73,10 +162,10 @@ get an error caused by the fact that it already has another meaning.
 Another point to note is that the Scala example is descending the
 directory recursively. One way to achieve this in Bash might be to
 adopt embrace the Unix philosophy of re-using and combining smaller
-tools to get the job done. For example, you've got
-[find](http://linux.die.net/man/1/find) which will do this for you,
-and you can usefully combine it with
-[xargs](http://linux.die.net/man/1/xargs).
+tools to get the job done. For example, you've got `find`
+(http://linux.die.net/man/1/find) which will do this for you, and you
+can usefully combine it with `xargs`
+(http://linux.die.net/man/1/xargs).
 
 Or, again you can delve into the many options of Bash:
 
@@ -90,41 +179,59 @@ $ ls **/*.gz
 a.gz  c.gz  dir1/a.gz  dir1/dir2/c.gz
 -----
 
-=== Excercise 2 - Variables
+== Writing scripts
 
-Allow the behaviour of the script to be customised by setting the
-value of an environment variable before running it. For example:
-
---------------------------------------
-$ bash test.sh
-Conf file name: /etc/default.txt
-$ export CONF_FILE=custom.txt
-Conf file name: custom.txt
---------------------------------------
-
-There are two main difficulties in solving this problem: remembering
-the significance of `exported` variables, and testing whether a
-variable already has a value.
-
-For the second point there are a couple of options. We can use the
-method from exercise 1 to perform a verbose test of the contents of
-the variable.
+Everything that you write on the Bash command line can be put into a
+file and executed as a script. The simplest way to run it is just to
+pass it along as the first argument to a new instance of Bash (the
+`cat` command will dump the contents of a file to the screen):
 
 -----
-if [[ ! -z "$CONF_FILE" ]]
-then
-  CONF_FILE=/etc/default.txt
-  ...
+$ cat hello.sh
+echo "hello world"
+$ bash hello.sh
+hello world
 -----
 
-Another solution, however, is to use some of the more advanced
-variable substitution options. These allow you to do things like set a
-default value for a variable while you are accessing it.
+Another way to do it is to add the execute permission and add a
+special line at the top which tells the OS to pass the file to Bash:
 
-To make use this functionality you reference a variable by using the
-`${VARNAMEXXX}` syntax, where `XXX` is some special prefix which
-identifies the behaviour you want to use. There are documenting in the
-man page under
-https://www.gnu.org/software/bash/manual/bashref.html#Shell-Parameter-Expansion/[Shell Parameter Expansion] For example:
+-----
+$ cat hello.sh
+#!/bin/bash
+echo "hello world"
+$ chmod u+x hello.sh
+$ ./hello.sh
+hello world
+$ mv hello.sh hello
+$ ./hello
+hello world
+-----
 
-//+ `:-` 
+In both of these instances, a new copy of Bash will be run which will
+house the script while it runs. This means that it won't be able to
+access the variables and other things that owned by the starting
+instance.
+
+In that case, you can either use the `source` command to execute the
+commands from the file in the same environment exactly as if you typed
+them at the command line, or you can `export` those resource to
+child processes.
+
+-----
+$ ./hello
+hello world
+$ bash ./hello.sh
+Hello 
+$ cat hello.sh
+echo "Hello $NAME"
+$ NAME="Superman"
+$ bash hello.sh
+Hello 
+$ source hello.sh
+Hello Superman
+$ export NAME=Spiderman
+$ bash hello.sh
+Hello Spiderman
+-----
+

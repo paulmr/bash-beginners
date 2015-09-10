@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Beginner’s Guide to Bash</title><link rel="stylesheet" type="text/css" href="docbook-xsl.css" /><meta name="generator" content="DocBook XSL Stylesheets V1.78.1" /></head><body><div xml:lang="en" class="article" lang="en"><div class="titlepage"><div><div><h2 class="title"><a id="idm139764978571984"></a>Beginner’s Guide to Bash</h2></div></div><hr /></div><div class="toc"><p><strong>Table of Contents</strong></p><dl class="toc"><dt><span class="section"><a href="#_goals_for_this_session">Goals for this session</a></span></dt><dt><span class="section"><a href="#_what_is_bash">What is Bash?</a></span></dt><dt><span class="section"><a href="#_getting_help">Getting help</a></span></dt><dt><span class="section"><a href="#_exercise_one">Exercise One</a></span></dt><dt><span class="section"><a href="#_writing_scripts">Writing scripts</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_goals_for_this_session"></a>Goals for this session</h2></div></div></div><p>This session is aimed squarely at beginners in the world of Bash
+scripting and Unix in general. If you don’t know what Bash is, or if
+you’ve just used other people’s Bash scripts without really
+understanding them, or you’ve tried to use Bash and ended up confused
+by its idiosyncracies then this session is probably for you.</p><p>By the end of it you will hopefully:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+know roughly what Bash is
+</li><li class="listitem">
+know where to read the docs and be aware of the some of the odd
+  naming conventions in shell-land
+</li><li class="listitem">
+know how to automate Bash’s behaviour by writing scripts
+</li><li class="listitem">
+understand when it’s appropriate to use shell scripting
+</li><li class="listitem">
+understand the limitiations of shell scripting
+</li><li class="listitem">
+know where to find documentation and how to use it about shell
+  scripting
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_what_is_bash"></a>What is Bash?</h2></div></div></div><p>Bash is an example of family of programs, known as “shells” which
+take commands from the user and execute them. Bash is probably the
+most common shell and is usually the default on modern OSs that need
+one.</p><p>It’s main job is to execute other programs on your behalf, and this
+follows the Unix philosphy of having small programs that do one thing
+well, and then giving you the ability to glue these programs together
+to achieve larger tasks.</p><p>For example, the shell will provide you with the ability to ‘pipe’ the
+output of one command into the input of another.</p><p>For example, this line will use the <code class="literal">wc</code> program to count the number
+of words in each file in the current directory, and then pipe this to
+the <code class="literal">sort</code>:</p><pre class="screen">wc -w * | sort -n</pre><p>Most commands you run, even the most basic ones, are external programs
+to which the shell is able to delegate, for example <code class="literal">which ls</code> will
+show you where the binary that shows you a list of files is stored.</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_getting_help"></a>Getting help</h2></div></div></div><p>Most Unix-like systems, incuding OSX, come with a set of documentation
+files call man pages, which document in great detail everything you
+could ever want to know about a command on the system. They can be
+accessed by typing <code class="literal">man</code> followed by the name of the command you want
+to learn about, and the best place to start is perhaps the man page
+about the man command itself, and you can search man pages with the
+<code class="literal">apropos</code> command:</p><pre class="screen">$ man man
+MAN(1)               Manual pager utils              MAN(1)
+
+NAME
+       man - an interface to the on-line reference manuals
+[...]
+$ apropos compress
+archive_read_filter (3) - functions for reading streaming archives
+archive_write_filter (3) - (unknown subject)
+gzip (1)             - compress or expand files
+[...]</pre></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_exercise_one"></a>Exercise One</h2></div></div></div><div class="sidebar"><div class="titlepage"></div><p>Compress all of the files in a directory that don’t match the <code class="literal">*.gz</code>
+suffix.</p><p>In the <code class="literal">test-data</code> directory of the repo will find a number of files,
+some of which are compressed, and some of which aren’t.</p><p>The command to use for the compression is <code class="literal">gzip</code>.</p></div><p>Bash (and shells in general) make the general assumption that what you
+are trying to do is execute system commands, and so that is it’s
+default interpretation of what you want to do, with everything else as
+just glue that sticks those elements together.</p><p>Naturally, this is what makes Bash well suited to automating system
+administration tasks, as these can usually be achieved with very
+little extra code: you can just run your tasks immediately, as you
+would type them without any preamble or configuration.</p><p>For example, one way we might solve this exercise in Scala would be a
+program like this:</p><pre class="programlisting">import java.io.File
+
+def process(f: File, indent: Int = 0): Unit = {
+  if(f.isDirectory)
+    for(child &lt;- f.listFiles) process(child)
+  else if(!f.getName.endsWith(".gz"))
+    /* ... either call out to `gzip` or use the JDK library... */
+    Runtime.getRuntime.exec(Array("gzip", f.getPath))
+}
+
+process(new File("."))</pre><p>Once you have a couple of pieces in place, you should be able to write
+the equivalent in Bash in a couple of lines (but naturally there are
+many different ways to do this, none of which are wrong…)</p><p>There are various situations in which Bash will replace special text
+with some computed values, and this is usually referred to in the docs
+as <code class="literal">EXPANSION</code>, e.g parameter expansion, filename expansion etc. Not
+suprisingly the latter is for finding and inserting files that match a
+wildcard patterns (this also has the charming moniker <code class="literal">globbing</code> in
+shell parlance).</p><p>To get an idea of the wildcards you have available, take a look at the
+Bash man page (<a class="ulink" href="http://linux.die.net/man/1/bash" target="_top">http://linux.die.net/man/1/bash</a>): there is a whole
+section about different types of Expansion, look specifically
+"Pathname Expansion".</p><p>By default you are limited to a couple of simple wildcards, but when
+the <code class="literal">extglob</code> (for extended globbing) setting is enabled you have
+significantly more options available:</p><pre class="screen">$ ls
+a.gz  b  c.gz
+$ ls !(*.gz)
+bash: !: event not found
+$ shopt -s extglob
+$ ls !(*.gz)
+b</pre><div class="note" style="margin-left: 0; margin-right: 10%;"><h3 class="title">Note</h3><p>Why is this behind an option? Backwards compatibility: if you try to
+use the pattern that you need without setting this option, you will
+get an error caused by the fact that it already has another meaning.</p></div><p>Another point to note is that the Scala example is descending the
+directory recursively. One way to achieve this in Bash might be to
+adopt embrace the Unix philosophy of re-using and combining smaller
+tools to get the job done. For example, you’ve got <code class="literal">find</code>
+(<a class="ulink" href="http://linux.die.net/man/1/find" target="_top">http://linux.die.net/man/1/find</a>) which will do this for you, and you
+can usefully combine it with <code class="literal">xargs</code>
+(<a class="ulink" href="http://linux.die.net/man/1/xargs" target="_top">http://linux.die.net/man/1/xargs</a>).</p><p>Or, again you can delve into the many options of Bash:</p><pre class="screen">$ ls *.gz
+a.gz  c.gz
+$ ls */*.gz
+dir1/a.gz
+$ shopt -s globstar
+$ ls **/*.gz
+a.gz  c.gz  dir1/a.gz  dir1/dir2/c.gz</pre></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_writing_scripts"></a>Writing scripts</h2></div></div></div><p>Everything that you write on the Bash command line can be put into a
+file and executed as a script. The simplest way to run it is just to
+pass it along as the first argument to a new instance of Bash (the
+<code class="literal">cat</code> command will dump the contents of a file to the screen):</p><pre class="screen">$ cat hello.sh
+echo "hello world"
+$ bash hello.sh
+hello world</pre><p>Another way to do it is to add the execute permission and add a
+special line at the top which tells the OS to pass the file to Bash:</p><pre class="screen">$ cat hello.sh
+#!/bin/bash
+echo "hello world"
+$ chmod u+x hello.sh
+$ ./hello.sh
+hello world
+$ mv hello.sh hello
+$ ./hello
+hello world</pre><p>In both of these instances, a new copy of Bash will be run which will
+house the script while it runs. This means that it won’t be able to
+access the variables and other things that owned by the starting
+instance.</p><p>In that case, you can either use the <code class="literal">source</code> command to execute the
+commands from the file in the same environment exactly as if you typed
+them at the command line, or you can <code class="literal">export</code> those resource to
+child processes.</p><pre class="screen">$ ./hello
+hello world
+$ bash ./hello.sh
+Hello
+$ cat hello.sh
+echo "Hello $NAME"
+$ NAME="Superman"
+$ bash hello.sh
+Hello
+$ source hello.sh
+Hello Superman
+$ export NAME=Spiderman
+$ bash hello.sh
+Hello Spiderman</pre></div></div></body></html>
