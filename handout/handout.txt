@@ -1,7 +1,7 @@
 // a2x default options.
 //    a2x: -f pdf
 // Suppress revision history in dblatex outputs.
-//    a2x: --dblatex-opts "-P latex.output.revhistory=0 -P doc.toc.show=0"
+//    a2x: --dblatex-opts "-P latex.output.revhistory=0 -P doc.toc.show=0 -P paper.type=a4paper"
 // Suppress book part, chapter and section numbering in DocBook XSL outputs.
 //    a2x: --xsltproc-opts
 //    a2x: "--stringparam part.autolabel 0
@@ -251,3 +251,15 @@ This provides a good example of why shell scripts can often be very
 fiddly, because things which are easy in traditional programming
 languages can be difficult in Bash as it requires you to jump through
 hoops to shift into `programming mode`.
+
+== Conclusion
+
+We have looked at what Bash is, and just as importantly what it
+*isn't*. Hopefully you have also gained some signposts that will point
+the way to getting documention on things you don't understand when
+reading existing scripts. We have also seem some of the subtlties that
+can confuse beginners with unexpected behaviour when running scripts.
+
+There are of course a lot more commands and other odds and ends that
+make up Bash's full toolset, and we will cover these in later
+sessions.
