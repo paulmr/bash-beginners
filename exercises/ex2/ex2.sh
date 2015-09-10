@@ -1,5 +1,10 @@
-# how long ago was 1 day in seconds?
+#!/bin/bash
 
-SECONDS=$((60 * 60 * 60 * 24))
+TOTAL=0
 
-echo $SECONDS
+for f in *
+do
+    TOTAL=$(($TOTAL + $(stat -c "%s" $f)))
+done
+
+echo $TOTAL

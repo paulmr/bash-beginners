@@ -235,3 +235,19 @@ $ bash hello.sh
 Hello Spiderman
 -----
 
+== Exercise Two
+
+****
+Add up the total size of all of the files in a directory.
+
+Search for `Arithmetic Expansion` in the man page to find the way to
+add numbers together.
+
+You will also find the `stat` command useful for this (although there
+are pleny of other ways to get this information).
+****
+
+This provides a good example of why shell scripts can often be very
+fiddly, because things which are easy in traditional programming
+languages can be difficult in Bash as it requires you to jump through
+hoops to shift into `programming mode`.
