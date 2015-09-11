@@ -46,8 +46,8 @@ follows the Unix philosphy of having small programs that do one thing
 well, and then giving you the ability to glue these programs together
 to achieve larger tasks.
 
-For example, the shell will provide you with the ability to `pipe' the
-output of one command into the input of another, as in the command
+For example, the shell will provide you with the ability to ``pipe''
+the output of one command into the input of another, as in the command
 line below: it uses the `wc` program to count the number of words in
 each file in the current directory, and then pipe this to the `sort`
 command:
@@ -56,10 +56,10 @@ command:
 wc -w * | sort -n
 -----
 
-Most commands you run, even the most basic ones, are external programs
-to which the shell is able to delegate its work. To see this in
-action, you can type `which ls`: this will show you where the binary
-that implements the `ls` command is held.
+The majority of commands you run, even the most basic ones, are
+external programs to which the shell is able to delegate its work. To
+see this in action, you can type `which ls`: this will show you where
+the binary that implements the `ls` command is held.
 
 == Exercise 1: Getting help
 
