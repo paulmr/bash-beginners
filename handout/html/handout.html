@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Beginner’s Guide to Bash</title><link rel="stylesheet" type="text/css" href="docbook-xsl.css" /><meta name="generator" content="DocBook XSL Stylesheets V1.78.1" /></head><body><div xml:lang="en" class="article" lang="en"><div class="titlepage"><div><div><h2 class="title"><a id="idm139750435445888"></a>Beginner’s Guide to Bash</h2></div></div><hr /></div><div class="toc"><p><strong>Table of Contents</strong></p><dl class="toc"><dt><span class="section"><a href="#_goals_for_this_session">Goals for this session</a></span></dt><dt><span class="section"><a href="#_what_is_bash">What is Bash?</a></span></dt><dt><span class="section"><a href="#_getting_help">Getting help</a></span></dt><dt><span class="section"><a href="#_exercise_one">Exercise One</a></span></dt><dt><span class="section"><a href="#_writing_scripts">Writing scripts</a></span></dt><dt><span class="section"><a href="#_exercise_two">Exercise Two</a></span></dt><dt><span class="section"><a href="#_conclusion">Conclusion</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_goals_for_this_session"></a>Goals for this session</h2></div></div></div><p>This session is aimed squarely at beginners in the world of Bash
-scripting and Unix in general. If you don’t know what Bash is, or if
-you’ve just used other people’s Bash scripts without really
-understanding them, or you’ve tried to use Bash and ended up confused
-by its idiosyncracies then this session is probably for you.</p><p>By the end of it you will hopefully:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Beginner’s Guide to Bash</title><link rel="stylesheet" type="text/css" href="docbook-xsl.css" /><meta name="generator" content="DocBook XSL Stylesheets V1.78.1" /></head><body><div xml:lang="en" class="article" lang="en"><div class="titlepage"><div><div><h2 class="title"><a id="idm140252761832560"></a>Beginner’s Guide to Bash</h2></div><div><div class="author"><h3 class="author"><span class="firstname">11th</span> <span class="othername">Sep</span> <span class="surname">2015</span></h3></div></div></div><hr /></div><div class="toc"><p><strong>Table of Contents</strong></p><dl class="toc"><dt><span class="section"><a href="#_goals_for_this_session">Goals for this session</a></span></dt><dt><span class="section"><a href="#_what_is_bash">What is Bash?</a></span></dt><dt><span class="section"><a href="#_exercise_1_getting_help">Exercise 1: Getting help</a></span></dt><dt><span class="section"><a href="#_exercise_2_locating_files">Exercise 2: Locating files</a></span></dt><dt><span class="section"><a href="#_exercise_3_writing_scripts">Exercise 3: Writing scripts</a></span></dt><dt><span class="section"><a href="#_exercise_4_doing_maths_in_bash_is_painful_8230">Exercise 4: Doing maths in Bash is painful…</a></span></dt><dt><span class="section"><a href="#_conclusion">Conclusion</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_goals_for_this_session"></a>Goals for this session</h2></div></div></div><p>This session is aimed at beginners in the world of Bash scripting and
+Unix in general. If you don’t know what Bash is, or if you’ve just
+used other people’s Bash scripts but their internal workings remain
+mysterious, or you’ve tried to use Bash and ended up confused by its
+idiosyncrasies then this session will hopefully be helpful.</p><p>By the end of it you will:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 know roughly what Bash is
 </li><li class="listitem">
 know where to read the docs and be aware of the some of the odd
@@ -15,45 +15,70 @@ understand when it’s appropriate to use shell scripting
 </li><li class="listitem">
 understand the limitiations of shell scripting
 </li><li class="listitem">
-know where to find documentation and how to use it about shell
-  scripting
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_what_is_bash"></a>What is Bash?</h2></div></div></div><p>Bash is an example of family of programs, known as “shells” which
+know where to find documentation
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_what_is_bash"></a>What is Bash?</h2></div></div></div><p>Bash is an example of a family of programs, known as “shells” which
 take commands from the user and execute them. Bash is probably the
 most common shell and is usually the default on modern OSs that need
 one.</p><p>It’s main job is to execute other programs on your behalf, and this
 follows the Unix philosphy of having small programs that do one thing
 well, and then giving you the ability to glue these programs together
-to achieve larger tasks.</p><p>For example, the shell will provide you with the ability to ‘pipe’ the
-output of one command into the input of another.</p><p>For example, this line will use the <code class="literal">wc</code> program to count the number
-of words in each file in the current directory, and then pipe this to
-the <code class="literal">sort</code>:</p><pre class="screen">wc -w * | sort -n</pre><p>Most commands you run, even the most basic ones, are external programs
-to which the shell is able to delegate, for example <code class="literal">which ls</code> will
-show you where the binary that shows you a list of files is stored.</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_getting_help"></a>Getting help</h2></div></div></div><p>Most Unix-like systems, incuding OSX, come with a set of documentation
+to achieve larger tasks.</p><p>For example, the shell will provide you with the ability to <code class="literal">pipe' the
+output of one command into the input of another, as in the command
+line below: it uses the `wc</code> program to count the number of words in
+each file in the current directory, and then pipe this to the <code class="literal">sort</code>
+command:</p><pre class="screen">wc -w * | sort -n</pre><p>Most commands you run, even the most basic ones, are external programs
+to which the shell is able to delegate its work. To see this in
+action, you can type <code class="literal">which ls</code>: this will show you where the binary
+that implements the <code class="literal">ls</code> command is held.</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_exercise_1_getting_help"></a>Exercise 1: Getting help</h2></div></div></div><div class="sidebar"><div class="titlepage"></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p class="simpara">
+Type <code class="literal">man bash</code> to see the documentation for the Bash shell.
+</p><p class="simpara">Once in, as well as the arrow keys, you can press <code class="literal">space</code> to move
+forward one page, and <code class="literal">b</code> to move backwards one page.</p></li><li class="listitem"><p class="simpara">
+Press <code class="literal">/</code> to begin a search and type <code class="literal">PS1</code> (use capital letters)
+followed by enter. Pressing <code class="literal">n</code> will move forwards from result to
+result, and <code class="literal">q</code> will cancel the search.
+</p><p class="simpara">These search results should give you some hints about how to change the
+prompt by setting a variable.</p><p class="simpara">Press <code class="literal">&lt;</code> to jump back to  the start, and search for <code class="literal">PROMPTING</code>. Take
+a look at the escape codes you can use within the prompt.</p></li><li class="listitem">
+Google “bash man page” and see if you prefer to use that instead.
+</li><li class="listitem">
+Press <code class="literal">q</code> to exit the documentation viewer and get back to the Bash
+prompt. Change the prompt (which in the example below is <code class="literal">$</code>) by
+typing:
+</li></ol></div><pre class="screen">$ PS1="\d :&gt; "
+Fri Sep 11 :&gt;</pre></div><p>Most Unix-like systems, incuding OSX, come with a set of documentation
 files call man pages, which document in great detail everything you
 could ever want to know about a command on the system. They can be
 accessed by typing <code class="literal">man</code> followed by the name of the command you want
 to learn about, and the best place to start is perhaps the man page
 about the man command itself, and you can search man pages with the
-<code class="literal">apropos</code> command:</p><pre class="screen">$ man man
-MAN(1)               Manual pager utils              MAN(1)
-
-NAME
-       man - an interface to the on-line reference manuals
-[...]
-$ apropos compress
-archive_read_filter (3) - functions for reading streaming archives
-archive_write_filter (3) - (unknown subject)
+<code class="literal">apropos</code> command:</p><pre class="screen">$ apropos compress
 gzip (1)             - compress or expand files
-[...]</pre></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_exercise_one"></a>Exercise One</h2></div></div></div><div class="sidebar"><div class="titlepage"></div><p>Compress all of the files in a directory that don’t match the <code class="literal">*.gz</code>
+[...]</pre><p>The man pages are also published on line and this can be a more
+convenient way to view them. Just be aware of differences that can
+crop up between different OSs and distributions (using the man command
+should give you the answer for the specific system you are using).</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_exercise_2_locating_files"></a>Exercise 2: Locating files</h2></div></div></div><div class="sidebar"><div class="titlepage"></div><p>Compress all of the files in a directory that don’t match the <code class="literal">*.gz</code>
 suffix.</p><p>In the <code class="literal">test-data</code> directory of the repo will find a number of files,
-some of which are compressed, and some of which aren’t.</p><p>The command to use for the compression is <code class="literal">gzip</code>.</p></div><p>Bash (and shells in general) make the general assumption that what you
-are trying to do is execute system commands, and so that is it’s
-default interpretation of what you want to do, with everything else as
-just glue that sticks those elements together.</p><p>Naturally, this is what makes Bash well suited to automating system
-administration tasks, as these can usually be achieved with very
-little extra code: you can just run your tasks immediately, as you
-would type them without any preamble or configuration.</p><p>For example, one way we might solve this exercise in Scala would be a
-program like this:</p><pre class="programlisting">import java.io.File
+some of which are compressed, and some of which aren’t.</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
+In that directory, type <code class="literal">ls *.gz</code> to list all of the which already
+have this extension.
+</li><li class="listitem">
+Look in the man page and search for “Pathname Expansion” and read
+about the pattern matching options.
+</li><li class="listitem"><p class="simpara">
+Try to invert the previous pattern by trying <code class="literal">ls !(*.gz)</code>.
+</p><p class="simpara">If you get an error, you will need to enable the extended globbing
+option with <code class="literal">shopt -s extglob</code>.</p><pre class="screen">$ ls
+a.gz  b  c.gz
+$ ls !(*.gz)
+bash: !: event not found
+$ shopt -s extglob
+$ ls !(*.gz)
+b</pre></li></ol></div></div><p>This exercise is an example of a task that is well-suited to shell
+scripting.</p><p>Bash (and shells in general) makes the assumption that what you are
+trying to do is execute system commands, and so that is it’s default
+interpretation of what you want to do, with everything else as just
+glue that sticks those elements together.</p><p>As a counter example, one way we might solve this exercise in Scala
+would be a program like this:</p><pre class="programlisting">import java.io.File
 
 def process(f: File, indent: Int = 0): Unit = {
   if(f.isDirectory)
@@ -63,30 +88,24 @@ def process(f: File, indent: Int = 0): Unit = {
     Runtime.getRuntime.exec(Array("gzip", f.getPath))
 }
 
-process(new File("."))</pre><p>Once you have a couple of pieces in place, you should be able to write
-the equivalent in Bash in a couple of lines (but naturally there are
-many different ways to do this, none of which are wrong…)</p><p>There are various situations in which Bash will replace special text
+process(new File("."))</pre><p>However, with we achieve this in a single line in bash:</p><div class="sidebar"><div class="titlepage"></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
+Look at the <code class="literal">gzip</code> man page, you can see that we can pass multiple
+files to it.
+</li><li class="listitem">
+Type <code class="literal">gzip !(*.gz)</code>. The wildcard pattern will get expanded to a
+list of files and these will be passed to gzip as its arguments.
+</li></ol></div></div><p>There are various situations in which Bash will replace special text
 with some computed values, and this is usually referred to in the docs
 as <code class="literal">EXPANSION</code>, e.g parameter expansion, filename expansion etc. Not
 suprisingly the latter is for finding and inserting files that match a
 wildcard patterns (this also has the charming moniker <code class="literal">globbing</code> in
-shell parlance).</p><p>To get an idea of the wildcards you have available, take a look at the
-Bash man page (<a class="ulink" href="http://linux.die.net/man/1/bash" target="_top">http://linux.die.net/man/1/bash</a>): there is a whole
-section about different types of Expansion, look specifically
-"Pathname Expansion".</p><p>By default you are limited to a couple of simple wildcards, but when
+shell parlance).</p><p>By default you are limited to a couple of simple wildcards, but when
 the <code class="literal">extglob</code> (for extended globbing) setting is enabled you have
-significantly more options available:</p><pre class="screen">$ ls
-a.gz  b  c.gz
-$ ls !(*.gz)
-bash: !: event not found
-$ shopt -s extglob
-$ ls !(*.gz)
-b</pre><div class="note" style="margin-left: 0; margin-right: 10%;"><h3 class="title">Note</h3><p>Why is this behind an option? Backwards compatibility: if you try to
+significantly more options available.</p><div class="note" style="margin-left: 0; margin-right: 10%;"><h3 class="title">Note</h3><p>Why is this behind an option? Backwards compatibility: if you try to
 use the pattern that you need without setting this option, you will
-get an error caused by the fact that it already has another meaning.</p></div><p>Another point to note is that the Scala example is descending the
-directory recursively. One way to achieve this in Bash might be to
-adopt embrace the Unix philosophy of re-using and combining smaller
-tools to get the job done. For example, you’ve got <code class="literal">find</code>
+get an error caused by the fact that it already has another meaning.</p></div><div class="sidebar"><div class="titlepage"><div><div><p class="title"><strong>Optional: recursive wildcards</strong></p></div></div></div><p>The Scala example is descending the directory recursively. One way to
+achieve this in Bash might be to combinine smaller tools to get the
+job done. For example, you’ve got <code class="literal">find</code>
 (<a class="ulink" href="http://linux.die.net/man/1/find" target="_top">http://linux.die.net/man/1/find</a>) which will do this for you, and you
 can usefully combine it with <code class="literal">xargs</code>
 (<a class="ulink" href="http://linux.die.net/man/1/xargs" target="_top">http://linux.die.net/man/1/xargs</a>).</p><p>Or, again you can delve into the many options of Bash:</p><pre class="screen">$ ls *.gz
@@ -95,24 +114,23 @@ $ ls */*.gz
 dir1/a.gz
 $ shopt -s globstar
 $ ls **/*.gz
-a.gz  c.gz  dir1/a.gz  dir1/dir2/c.gz</pre></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_writing_scripts"></a>Writing scripts</h2></div></div></div><p>Everything that you write on the Bash command line can be put into a
+a.gz  c.gz  dir1/a.gz  dir1/dir2/c.gz</pre></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_exercise_3_writing_scripts"></a>Exercise 3: Writing scripts</h2></div></div></div><p>Everything that you write on the Bash command line can be put into a
 file and executed as a script. The simplest way to run it is just to
-pass it along as the first argument to a new instance of Bash (the
-<code class="literal">cat</code> command will dump the contents of a file to the screen):</p><pre class="screen">$ cat hello.sh
-echo "hello world"
-$ bash hello.sh
-hello world</pre><p>Another way to do it is to add the execute permission and add a
-special line at the top which tells the OS to pass the file to Bash:</p><pre class="screen">$ cat hello.sh
-#!/bin/bash
-echo "hello world"
-$ chmod u+x hello.sh
+pass it along as the first argument to a new instance of Bash.</p><div class="sidebar"><div class="titlepage"></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
+Open up a text editor and write the commands from the previous
+exercise in a file.
+</li><li class="listitem">
+Run <code class="literal">bash &lt;filename&gt;</code> to execute your script.
+</li></ol></div></div><p>Another way to do it is to add the execute permission and add a
+special line at the top which tells the OS to pass the file to Bash:</p><p>If <code class="literal">hello.sh</code> contains:</p><pre class="screen">#!/bin/bash
+echo "hello world"</pre><p>we can:</p><pre class="screen">$ chmod u+x hello.sh
 $ ./hello.sh
 hello world
 $ mv hello.sh hello
 $ ./hello
 hello world</pre><p>In both of these instances, a new copy of Bash will be run which will
 house the script while it runs. This means that it won’t be able to
-access the variables and other things that owned by the starting
+access the variables and other things that are owned by the starting
 instance.</p><p>In that case, you can either use the <code class="literal">source</code> command to execute the
 commands from the file in the same environment exactly as if you typed
 them at the command line, or you can <code class="literal">export</code> those resource to
@@ -129,15 +147,36 @@ $ source hello.sh
 Hello Superman
 $ export NAME=Spiderman
 $ bash hello.sh
-Hello Spiderman</pre></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_exercise_two"></a>Exercise Two</h2></div></div></div><div class="sidebar"><div class="titlepage"></div><p>Add up the total size of all of the files in a directory.</p><p>Search for <code class="literal">Arithmetic Expansion</code> in the man page to find the way to
-add numbers together.</p><p>You will also find the <code class="literal">stat</code> command useful for this (although there
-are pleny of other ways to get this information).</p></div><p>This provides a good example of why shell scripts can often be very
-fiddly, because things which are easy in traditional programming
-languages can be difficult in Bash as it requires you to jump through
-hoops to shift into <code class="literal">programming mode</code>.</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_conclusion"></a>Conclusion</h2></div></div></div><p>We have looked at what Bash is, and just as importantly what it
+Hello Spiderman</pre></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_exercise_4_doing_maths_in_bash_is_painful_8230"></a>Exercise 4: Doing maths in Bash is painful…</h2></div></div></div><p>If we want to add up the total size of all of the files in a
+directory, we need to do some arithmetic which is quite fiddly in
+Bash, because of it’s default assumption that you are just typing
+commands and thier arguments.</p><div class="sidebar"><div class="titlepage"></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
+Search for <code class="literal">Arithmetic Expansion</code> in the man page to find the way to
+add numbers together.
+</li><li class="listitem">
+Use the <code class="literal">$(( ))</code> interpolation option to insert arithmetic:
+</li></ol></div><pre class="screen">$ echo $((10 + 5))
+15</pre><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">
+Use the <code class="literal">stat</code> command if it is available, or <code class="literal">ls</code> and manipulate
+the output.
+</li><li class="listitem">
+Create a new script and use a <code class="literal">for</code> loop to look up this information
+for each file:
+</li></ol></div><pre class="screen">COUNT=0
+for f in *
+do
+  SIZE=$(stat -c %s $f)
+  COUNT=$(($COUNT + $SIZE))
+done
+echo $SIZE</pre><div class="note" style="margin-left: 0; margin-right: 10%;"><h3 class="title">Note</h3><p>we are also using <code class="literal">$()</code> to interpolate the output of a command,
+which is separate from <code class="literal">$(())</code>. Confusing, right?!</p></div></div><p>This exercise provides a good example of why shell scripts can often
+be very fiddly, because things which are easy in traditional
+programming languages can be difficult in Bash as it requires you to
+jump through hoops to shift into <code class="literal">programming mode</code>.</p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_conclusion"></a>Conclusion</h2></div></div></div><p>We have looked at what Bash is, and just as importantly what it
 <span class="strong"><strong>isn’t</strong></span>. Hopefully you have also gained some signposts that will point
-the way to getting documention on things you don’t understand when
-reading existing scripts. We have also seem some of the subtlties that
-can confuse beginners with unexpected behaviour when running scripts.</p><p>There are of course a lot more commands and other odds and ends that
+the way to getting documention on things that are new when reading or
+modifying existing scripts. We have also seen some of the subtleties
+that can confuse beginners with unexpected behaviour when running
+scripts.</p><p>There are of course a lot more commands and other odds and ends that
 make up Bash’s full toolset, and we will cover these in later
 sessions.</p></div></div></body></html>
